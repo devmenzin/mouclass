@@ -1,0 +1,20 @@
+# Configurações do Registro
+$regContent = @"
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\mouclass\Parameters]
+"MouseDataQueueSize"=dword:0000002e
+"WppRecorder_TraceGuid"="{fc8df8fd-d105-40a9-af75-2eec294adf8d}"
+"@
+
+# Caminho do arquivo .reg temporário
+$regFilePath = [System.IO.Path]::Combine($env:TEMP, 'mouse_settings.reg')
+
+# Salva o conteúdo no arquivo .reg
+$regContent | Set-Content -Path $regFilePath -Force
+
+# Executa o arquivo .reg usando regedit.exe
+Start-Process "regedit.exe" -ArgumentList "/s `"$regFilePath`"" -Wait
+
+# Remove o arquivo .reg temporário após a execução
+Remove-Item -Path $regFilePath -Force
